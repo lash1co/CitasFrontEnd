@@ -1,0 +1,68 @@
+<!-- Editable table -->
+<div class="card">
+  <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Listado de eventos</h3>
+  <div class="card-body">
+    <div id="table" class="table-editable">
+      <span class="table-add float-right mb-3 mr-2">
+        <button 
+          type="submit" 
+          class="btn btn-primary block full-width m-b float-right"
+          (click)="openModalCrearEvento()">
+          AGREGAR
+        </button>
+      </span>
+      <table class="table table-responsive-md table-striped text-center">
+        <tr>
+          <th class="text-center">Código</th>
+          <th class="text-center">Descripción</th>
+          <!--<th class="text-center">Estado</th>
+          <th class="text-center">Eliminar</th>-->
+        </tr>
+        <tr *ngFor="let evento of eventoList">
+          <td>
+            <span contenteditable="false">{{evento.Id}}</span>
+          </td>
+          <td>
+            <span contenteditable="true" (keyup)="changeValue(evento.Id, 'Nom_Evento', $event)" (blur)="updateList(evento.Id, 'Nom_Evento', $event)">{{evento.Nom_Evento}}</span>
+          </td>
+          <!--<td>
+            <span contenteditable="true" (keyup)="changeValue(evento.Id, 'companyName', $event)" (blur)="updateList(evento.Id, 'companyName', $event)">{{evento.IdEstado}}</span>
+          </td>
+          <td>
+            <span class="table-remove">
+              <button type="button" class="btn btn-danger" (click)="actualizarEvento(evento.Id)">Remove</button>
+            </span>
+          </td>-->
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- Editable table -->
+
+<!-- CUADRO DE DIALOGO => CREAR EVENTO -->
+<ng-template #modalCrearEvento let-close="close">
+  <div class="modal-header" style="background-color: #007bff; color: white;">
+    <h5 class="modal-title">Crear evento</h5>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <div>
+        Nombre de evento
+        <form class="m-t" role="form" [formGroup]="crearEventoForm" (submit)="crearEvento()" autocomplete="off">
+            <div class="form-group">
+                <pre><input type="text" formControlName="nombreEvento" name="nombreEvento" id="nombreEvento" class="form-control" placeholder="Nombre de evento" value="" required></pre>
+            </div>
+          
+
+          <div class="modal-footer">
+            <button  type="submit" class="btn btn-primary block full-width m-b float-right">Crear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

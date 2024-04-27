@@ -1,0 +1,241 @@
+<div class="row text-center">
+  <!-- BOTONES -> ANTERIOR, HOY, SIGUIENTE -->
+  <div class="col-md-3">
+    <div class="btn-group">
+      <div
+        class="btn btn-primary"
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()"
+      >
+        Anterior
+      </div>
+      <div
+        class="btn btn-outline-secondary"
+        mwlCalendarToday
+        [(viewDate)]="viewDate"
+      >
+        Hoy
+      </div>
+      <div
+        class="btn btn-primary"
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()"
+      >
+        Siguiente
+      </div>
+    </div>
+  </div>
+
+  <!-- NOMBRE DEL MES -->
+  <div class="col-md-3">
+    <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'Es' }}</h3>
+  </div>
+
+  <!-- MES, SEMANA, DIA -->
+  <div class="col-md-3">
+    <div class="btn-group">
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Month)"
+        [class.active]="view === CalendarView.Month"
+      >
+        Mes
+      </div>
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Week)"
+        [class.active]="view === CalendarView.Week"
+      >
+        Semana
+      </div>
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Day)"
+        [class.active]="view === CalendarView.Day"
+      >
+        Día
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<div class="col-md-12">
+  <!-- VISTAS MES, SEMANA, DIA -->
+  <div [ngSwitch]="view"class="col-md-9" style="float: left;">
+    <mwl-calendar-month-view
+      *ngSwitchCase="CalendarView.Month"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      [activeDayIsOpen]="activeDayIsOpen"
+      (dayClicked)="dayClicked($event.day)"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
+    >
+    </mwl-calendar-month-view>
+    <mwl-calendar-week-view
+      *ngSwitchCase="CalendarView.Week"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
+    >
+    </mwl-calendar-week-view>
+    <mwl-calendar-day-view
+      *ngSwitchCase="CalendarView.Day"
+      [viewDate]="viewDate"
+      [events]="events"
+      [refresh]="refresh"
+      (eventClicked)="handleEvent('Clicked', $event.event)"
+      (eventTimesChanged)="eventTimesChanged($event)"
+    >
+    </mwl-calendar-day-view>
+  </div>
+
+  <!-- AGENDAR CITA -->
+  <div class="col-md-3" style="float: right;">
+    <div class="card bg-light mb-3" style="height: 450px;">
+      <div class="card-body">
+        <h3>
+          Agendar cita
+          <div class="clearfix"></div>
+        </h3>
+        <div class="card-agendar-cita">
+          <form class="m-t" role="form" [formGroup]="agendarCitaForm" (submit)="agendarCita()" autocomplete="off">
+            <div class="form-group">
+              <input type="text" formControlName="tituloCita" class="form-control" placeholder="Titulo de cita" required>
+            </div>
+            <div class="form-group">
+              <input type="text" formControlName="idEvento" class="form-control" placeholder="Seleccione el evento" list="eventList" required>
+              <datalist id="eventList">
+                <option *ngFor="let item of this.evento" [value]="item.Id" >{{item.Nom_Evento}}</option>
+              </datalist>
+            </div>
+
+            <!-- INICIO -->
+            <div class="form-group">
+              <label for="">Fecha & Hora de inicio:</label>
+              <div class="input-group">
+                <input id="fechaInicio" type="date" formControlName="fechaInicio" value="" class="form-control" required>
+                <span class="input-group-addon">  </span>
+                <input id="horaInicio" type="time" formControlName="horaInicio" value="" class="form-control" required>
+              </div>
+            </div>
+
+            <!--<div class="form-group">
+              <label for="fechaInicio">Fecha Inicio:</label>
+              <input id="fechaInicio" type="date" formControlName="fechaInicio" value="" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="horaInicio">Hora Inicio:</label>
+              <input id="horaInicio" type="time" formControlName="horaInicio" value="" class="form-control" required>
+            </div>-->
+
+            <!-- FIN -->
+            <div class="form-group">
+              <label for="">Fecha & Hora de fin:</label>
+              <div class="input-group">
+                <input id="fechaFin" type="date" formControlName="fechaFin" value="" class="form-control" required>
+                <span class="input-group-addon">  </span>
+                <input id="horaFin" type="time" formControlName="horaFin" value="" class="form-control" required>
+              </div>
+            </div>
+
+            <!--<div class="form-group">
+              <label for="fechaFin">Fecha Fin:</label>
+              <input id="fechaFin" type="date" formControlName="fechaFin" value="" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="horaFin">Hora Fin:</label>
+              <input id="horaFin" type="time" formControlName="horaFin" value="" class="form-control" required>
+            </div>-->
+
+            <input type="text" formControlName="idUsuario" hidden>
+
+            <button  type="submit" class="btn btn-primary block full-width m-b float-right">Crear</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br /><br /><br />
+
+<!-- CUADRO DE DIALOGO => EDITAR EVENTO -->
+<ng-template #modalContent let-close="close">
+  <div class="modal-header">
+    <h5 class="modal-title" *ngIf="modalData?.action == 'Clicked'">Visualizar cita</h5>
+    <h5 class="modal-title" *ngIf="modalData?.action == 'Edited'">Editar cita</h5>
+
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <form class="m-t" role="form" [formGroup]="editarCitaForm" (submit)="editarCita()" autocomplete="off">
+        <input type="text" formControlName="id" hidden> 
+        <input type="text" formControlName="idUsuario" hidden>
+
+        <div class="form-group">
+          <label for="tituloCita" >Titulo de la cita:</label>
+          <input type="text" formControlName="tituloCita" class="form-control" id="tituloCita">
+        </div>
+        <div class="form-group">
+          <label for="evento" >Evento:</label>
+          <input type="text" formControlName="idEvento" class="form-control" id="evento" list="eventList">
+          <datalist id="eventList">
+            <option *ngFor="let item of this.evento" [value]="item.Id" >{{item.Nom_Evento}}</option>
+          </datalist>
+        </div>
+
+        <!-- INICIO -->
+        <div class="form-group">
+          <label for="">Fecha & Hora de inicio:</label>
+          <div class="input-group">
+            <input id="fechaInicio" type="date" formControlName="fechaInicio" value="" class="form-control">
+            <span class="input-group-addon">  </span>
+            <input id="horaInicio" type="time" formControlName="horaInicio" value="" class="form-control" required>
+          </div>
+        </div>
+
+        <!-- FIN -->
+        <div class="form-group">
+          <label for="">Fecha & Hora de fin:</label>
+          <div class="input-group">
+            <input id="fechaFin" type="date" formControlName="fechaFin" value="" class="form-control" required>
+            <span class="input-group-addon">  </span>
+            <input id="horaFin" type="time" formControlName="horaFin" value="" class="form-control" required>
+          </div>
+        </div>
+
+        <!-- ESTADO -->
+        <div class="form-group">
+          <label for="estado" >Estado:</label>
+          <input type="text" formControlName="estado" class="form-control" id="IdEstado" list="estadoList">
+          <datalist id="estadoList">
+            <option value="1">Registrada</option>
+            <option value="2">Cancelada</option>
+            <option value="3">Atendida</option>
+          </datalist>
+        </div>
+
+        <div class="modal-footer">
+          <button  type="submit" class="btn btn-primary block full-width m-b float-right" *ngIf="modalData?.action == 'Edited'">
+            Actualizar
+          </button>
+          <button type="button" class="btn btn-primary block full-width m-b float-right" (click)="close()" *ngIf="modalData?.action == 'Clicked'">
+            Cerrar
+          </button>
+        </div>
+      </form>
+  </div>
+  
+</ng-template>

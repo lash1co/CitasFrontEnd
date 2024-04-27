@@ -1,0 +1,61 @@
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+      <!-- Tabs Titles -->
+  
+      <!-- Icon -->
+      <div class="fadeIn first">
+        <img src="https://image.freepik.com/vector-gratis/ilustracion-personaje-personas-iconos-cuenta-usuario_53876-43022.jpg" id="icon" alt="User Icon" />
+      </div>
+
+      <div *ngIf="Nombre === '' || Nombre === null || Nombre === undefined;else other_content" >
+        <form [formGroup]="loginForm" (submit)="iniciarSesion()" autocomplete="off">
+          <input type="text" formControlName="user" class="fadeIn second" placeholder="Usuario">
+          <input type="text" formControlName="password" class="fadeIn third"  placeholder="Contraseña">
+          <input type="submit" class="fadeIn fourth" value="Iniciar sesión" >
+        </form>
+
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+          <a (click)="openModalCrearCuenta()">Crear cuenta</a>
+        </div>
+      </div>
+      <ng-template #other_content>
+        <a (click)="cerrarSesion()">Volver</a>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- CUADRO DE DIALOGO => CREAR EVENTO -->
+<ng-template #modalCrearCuenta let-close="close">
+    <div class="modal-header" style="background-color: #007bff; color: white;">
+      <h5 class="modal-title">Crear cuenta</h5>
+      <button type="button" class="close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div>
+          <form class="m-t" role="form" [formGroup]="crearCuentaForm" (submit)="crearCuenta()" autocomplete="off">
+            <div class="form-group">
+                <input type="text" formControlName="usuario" class="form-control" placeholder="Nombre de usuario" value="" style="width: 100%;">
+            </div>
+            <div class="form-group">
+                <input type="text" formControlName="contrasenia" class="form-control" placeholder="Contraseña" value="" style="width: 100%;">
+            </div>
+            <input type="text" formControlName="rol" hidden>
+            <input type="text" formControlName="idSistema" hidden>
+            <div class="form-group">
+                <input type="text" formControlName="telefono" class="form-control" placeholder="Teléfono" value="" style="width: 100%;">
+            </div>
+            <div class="form-group">
+                <input type="text" formControlName="correo" class="form-control" placeholder="Correo electrónico" value="" style="width: 100%;">
+            </div>
+            <div class="modal-footer">
+                <button  type="submit" class="btn btn-primary block full-width m-b float-right">Crear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </ng-template>

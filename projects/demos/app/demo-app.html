@@ -1,0 +1,178 @@
+<ng-template #loading>
+  <div class="card">
+    <div class="card-body text-center">
+      <i class="fas fa-spin fa-spinner fa-5x"></i> <br />
+      Loading demo...
+    </div>
+  </div>
+</ng-template>
+
+
+<div class='dashboard'>
+  <div class="dashboard-nav">
+    <header>
+      <a href="#!" class="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </a>
+      <a href="#" class="brand-logo">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Calendario</span>
+      </a>
+    </header>
+
+    <nav class="dashboard-nav-list">
+      <a *ngIf="Nombre" class="dashboard-nav-item">
+        <div class="app-sidebar__user">
+          <div class="dropdown user-pro-body text-center">
+            <div class="user-pic" >
+              <img 
+                width="100px"
+                src="https://www.freeiconspng.com/thumbs/computer-user-icon/computer-user-icon-28.png" 
+                alt="user-img"
+                class="rounded-circle mCS_img_loaded"
+                *ngIf="Rol === '1';else other_content"
+              >
+              <ng-template #other_content>
+                <img 
+                  width="100px"
+                  src="http://pngwebicons.com/uploads/user/512/user_icon9125.png" 
+                  alt="user-img"
+                  class="rounded-circle mCS_img_loaded"
+                  *ngIf="Rol === '2';else other_content"
+                >
+              </ng-template>
+
+            </div>
+            <div class="user-info">
+              <h6 class=" mb-0 text-dark">{{Nombre}}</h6>
+              <span class="app-sidebar__user-name text-sm" *ngIf="Rol === '1'"><strong>ADMINISTRADOR</strong></span>
+              <span class="app-sidebar__user-name text-sm" *ngIf="Rol === '2'"><strong>OPERARIO</strong></span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <a *ngIf="Nombre === '' || Nombre === null || Nombre === undefined " routerLink="/inicio" class="dashboard-nav-item">
+        <i class="fas fa-home"></i>
+        Iniciar sesión
+      </a>
+
+      <a *ngIf="Nombre && Rol === '1' " routerLink="/evento" class="dashboard-nav-item" id="eventoTag">
+        <i class="fas fa-cogs"></i>
+        Eventos
+      </a>
+
+      <a *ngIf="Nombre" routerLink="/kitchen-sink" class="dashboard-nav-item" id="calendarioTag">
+        <i class="fas fa-home"></i>
+        Calendario
+      </a>
+
+      <a *ngIf="Nombre" routerLink="/perfil" class="dashboard-nav-item">
+        <i class="fas fa-user"></i> 
+        Perfil
+      </a>
+
+      <div class="nav-item-divider"></div>
+      <a *ngIf="Nombre" href="#" class="dashboard-nav-item" (click)="cerrarSesion()" id="cerrarSesionTag">
+        <i class="fas fa-sign-out-alt"></i> 
+        Cerrar sesión 
+      </a>
+    </nav>
+  </div>
+
+  <div class='dashboard-app'>
+    <div class='dashboard-content'>
+      <div class='container'>
+        <div class="card-body col-md-12">
+          <ngb-tabset [destroyOnHide]="false">
+            <ngb-tab>
+              <ng-template ngbTabTitle >
+                <i class="fas fa-fw fa-laptop"></i> Registre sus citas aquí
+              </ng-template>
+              <ng-template ngbTabContent>
+                <router-outlet></router-outlet>
+              </ng-template>
+            </ngb-tab>
+          </ngb-tabset>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<router-outlet></router-outlet>-->
+
+<!--<div class="card-body col-md-12">
+  <ngb-tabset [destroyOnHide]="false">
+    <ngb-tab>
+      <ng-template ngbTabTitle >
+        <i class="fas fa-fw fa-laptop"></i> Registre sus citas aquí
+      </ng-template>
+      <ng-template ngbTabContent>
+        <router-outlet></router-outlet>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>-->
+
+<!-- CUADRO DE DIALOGO => LISTAR EVENTOS -->
+<ng-template #modalListarEventos let-close="close">
+  <div class="modal-header">
+    <h5 class="modal-title">Lista de eventos</h5>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <div id="scroll-tabla">
+        <table class="table table-hover">
+          <tr>
+            <th>#</th>
+            <th>Nombre de evento</th>
+            <th>Estado</th>
+          </tr>
+          <tr *ngFor="let item of xmlItems">
+            <td>{{item.Id}}</td>
+            <td>{{item.Nom_Evento}}</td>
+            <td>
+              <div *ngIf="item.IdEstado == 1; else elseBlock">
+                <button type="button" class="btn btn-success">Activo</button>
+              </div>
+              <ng-template #elseBlock>
+                <button type="button" class="btn btn-danger">Inactivo</button>
+              </ng-template>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- CUADRO DE DIALOGO => CREAR EVENTO -->
+<ng-template #modalCrearEvento let-close="close">
+  <div class="modal-header">
+    <h5 class="modal-title">Crear evento</h5>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <div>
+        Nombre de evento
+        <form class="m-t" role="form" [formGroup]="crearEventoForm" (submit)="crearEvento()" autocomplete="off">
+            <div class="form-group">
+                <pre><input type="text" formControlName="nombreEvento" name="nombreEvento" id="nombreEvento" class="form-control" placeholder="Nombre de evento" value="" required></pre>
+            </div>
+          
+
+          <div class="modal-footer">
+            <button  type="submit" class="btn btn-primary block full-width m-b float-right">Crear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
